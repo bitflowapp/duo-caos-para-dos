@@ -138,8 +138,30 @@ export function Lobby({ room }: { room: RoomState }) {
 
   const myChar = mine?.character ?? null;
   const takenByPartner = partner?.character ?? null;
-  const canReady = !!myChar && !!partner;
   const bothHere = !!partner;
+
+  const statusText = !myChar
+    ? 'Elegí un personaje para poder confirmar.'
+    : !partner
+      ? mine?.ready
+        ? 'Listo. Falta tu pareja: mandale el enlace de arriba para que entre.'
+        : 'Falta tu pareja: mandale el enlace de arriba. Mientras tanto, elegí y confirmá.'
+      : mine?.ready && !partner.ready
+        ? `Esperando a ${partner.name}…`
+        : !mine?.ready && partner.ready
+          ? `${partner.name} ya confirmó. ¡Dale!`
+          : 'Cuando los dos confirmen, arranca la cuenta regresiva.';
+
+  const onReady = (): void => {
+    if (!myChar) {
+      audio.play('back');
+      toast('Elegí un personaje primero');
+      document.getElementById('char-title')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    audio.play(mine?.ready ? 'unready' : 'ready');
+    net.setReady(!mine?.ready);
+  };
 
   return (
     <main className="screen">
@@ -264,29 +286,6 @@ export function Lobby({ room }: { room: RoomState }) {
         </section>
 
         <button
-          className={`btn block ${mine?.ready ? 'ghost' : 'mint'}`}
-          style={{ minHeight: 64, fontSize: '1.3rem' }}
-          disabled={!canReady}
-          onClick={() => {
-            audio.play(mine?.ready ? 'unready' : 'ready');
-            net.setReady(!mine?.ready);
-          }}
-          data-testid="ready"
-        >
-          {mine?.ready ? 'Cancelar “listo”' : '¡Estoy listo!'}
-        </button>
-        <p className="center muted" style={{ margin: 0 }} aria-live="polite">
-          {!partner
-            ? 'Esperando a que tu pareja entre a la sala…'
-            : !myChar
-              ? 'Elegí un personaje para continuar.'
-              : mine?.ready && !partner.ready
-                ? `Esperando a ${partner.name}…`
-                : !mine?.ready && partner.ready
-                  ? `${partner.name} ya está esperando. ¡Dale!`
-                  : 'Cuando los dos estén listos, arranca la partida.'}
-        </p>
-        <button
           className="btn ghost small"
           onClick={() => {
             if (window.confirm('¿Salir de la sala? Tu pareja va a quedar esperando.')) net.leaveRoom();
@@ -294,6 +293,20 @@ export function Lobby({ room }: { room: RoomState }) {
         >
           Salir de la sala
         </button>
+        <div className="action-bar">
+          <p className="action-status" aria-live="polite" data-testid="ready-status">
+            {statusText}
+          </p>
+          <button
+            className={`btn block ${mine?.ready ? 'ghost' : 'mint'}`}
+            style={{ minHeight: 64, fontSize: '1.3rem' }}
+            aria-disabled={!myChar}
+            onClick={onReady}
+            data-testid="ready"
+          >
+            {mine?.ready ? 'Cancelar “listo”' : '¡Estoy listo!'}
+          </button>
+        </div>
       </div>
     </main>
   );

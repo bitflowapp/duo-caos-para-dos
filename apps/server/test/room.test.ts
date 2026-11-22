@@ -96,7 +96,8 @@ describe('sala: lobby', () => {
     const { room, clock } = h;
     room.select(0, { character: 'chispa', skin: 0, accessory: 'none' }, clock.now);
     room.select(1, { character: 'chispa', skin: 0, accessory: 'none' }, clock.now);
-    expect(room.seats[1]?.character).toBeNull(); // el servidor rechaza el personaje repetido
+    expect(room.seats[1]?.character).toBe('bruma'); // el servidor rechaza el personaje repetido
+    room.select(1, { character: null, skin: 0, accessory: 'none' }, clock.now);
     room.setReady(1, true, clock.now);
     expect(room.seats[1]?.ready).toBe(false); // sin personaje no se puede estar listo
     room.select(1, { character: 'bruma', skin: 0, accessory: 'none' }, clock.now);
@@ -104,6 +105,30 @@ describe('sala: lobby', () => {
     room.setReady(1, true, clock.now);
     h.advance(50);
     expect(room.phase).toBe('countdown');
+  });
+
+  it('el primero arranca con Chispa y el segundo recibe a Bruma, así nadie queda trabado', () => {
+    const h = makeRoom();
+    expect(h.room.seats[0]?.character).toBe('chispa');
+    expect(h.room.seats[1]?.character).toBe('bruma');
+    // Sin elegir nada, confirmar "listo" a los dos alcanza para empezar.
+    h.room.setReady(0, true, h.clock.now);
+    h.room.setReady(1, true, h.clock.now);
+    h.advance(50);
+    expect(h.room.phase).toBe('countdown');
+  });
+
+  it('se puede confirmar "listo" antes de que entre la pareja y se conserva al llegar', () => {
+    const h = makeRoom();
+    h.room.removePlayer(1, h.clock.now);
+    h.room.setReady(0, true, h.clock.now);
+    expect(h.room.seats[0]?.ready).toBe(true);
+    h.room.addPlayer('Mía', 'h'.repeat(43), 'sock-c', h.clock.now);
+    expect(h.room.seats[0]?.ready).toBe(true);
+    expect(h.room.seats[1]?.character).toBe('bruma');
+    h.room.setReady(1, true, h.clock.now);
+    h.advance(50);
+    expect(h.room.phase).toBe('countdown');
   });
 
   it('cambiar de juego obliga a confirmar de nuevo', () => {

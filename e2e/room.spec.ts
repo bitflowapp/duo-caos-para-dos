@@ -37,6 +37,28 @@ test('recargar en plena carrera pausa la partida y se recupera con el token de l
   for (const p of [a, b]) await p.context.close();
 });
 
+test('el botón "Estoy listo" siempre se ve, explica qué falta y funciona aun estando solo', async ({ browser }, info) => {
+  const a = await openPlayer(browser, info);
+  const b = await openPlayer(browser, info);
+  const code = await createRoom(a, 'Ana');
+  const ready = a.page.getByTestId('ready');
+  // Visible sin scrollear, aunque la pantalla sea larga
+  await expect(ready).toBeInViewport();
+  await expect(a.page.getByTestId('ready-status')).toContainText('Falta tu pareja');
+  // Estando solo se puede confirmar (queda esperando a la pareja)
+  await ready.tap();
+  await expect(ready).toHaveText(/Cancelar/);
+  await expect(a.page.getByTestId('ready-status')).toContainText('Falta tu pareja');
+  // Entra la pareja: su botón también se ve y al confirmar arranca la partida
+  await joinByLink(b, code, 'Leo');
+  const readyB = b.page.getByTestId('ready');
+  await expect(readyB).toBeInViewport();
+  await expect(a.page.getByTestId('ready-status')).toContainText('Esperando a Leo');
+  await readyB.tap();
+  await expect(a.page.getByRole('progressbar', { name: 'Progreso de la carrera' })).toBeVisible({ timeout: 15_000 });
+  for (const p of [a, b]) await p.context.close();
+});
+
 test('inicio en vertical: pantalla de inicio usable y sin desbordes', async ({ browser }, info) => {
   const a = await openPlayer(browser, info);
   await a.page.goto('/');

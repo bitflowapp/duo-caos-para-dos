@@ -115,8 +115,8 @@ export class Room {
       socketId,
       connected: true,
       disconnectedAt: null,
-      // Si el otro ya eligió, sugerimos el personaje libre.
-      character: taken ? (taken === 'chispa' ? 'bruma' : 'chispa') : null,
+      // Por defecto: Chispa al primero y el personaje libre al segundo (se puede cambiar).
+      character: taken ? (taken === 'chispa' ? 'bruma' : 'chispa') : 'chispa',
       skin: 0,
       accessory: 'none',
       ready: false,
