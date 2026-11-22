@@ -107,6 +107,20 @@ Las entradas de juego en E2E las genera un **piloto automático** que solo exist
 builds con `VITE_E2E=1` (se elimina del build de producción) y que pasa por el mismo
 camino que los controles táctiles (`InputState` → predicción → servidor).
 
+### Lighthouse (pantalla de inicio, perfil móvil simulado: 4G lenta y CPU ×4)
+
+| Categoría | Puntaje |
+| --------- | ------- |
+| Accesibilidad | 100 |
+| Buenas prácticas | 100 |
+| Rendimiento | 48 |
+
+El rendimiento de carga está limitado por el motor Phaser (~332 KB gzip) y por la
+rasterización inicial de ~170 texturas SVG (Total Blocking Time ≈ 3,8 s con CPU ×4,
+LCP 4,3 s). Mitigaciones aplicadas: la interfaz React aparece primero, Phaser se carga
+en el primer momento ocioso y el rasterizado cede el hilo principal entre tandas. En
+juego, la resolución baja sola si los FPS caen por debajo de 45.
+
 ### Verificación visual
 
 Se revisaron capturas de Chromium (perfil Pixel 7, vertical y horizontal) de inicio,

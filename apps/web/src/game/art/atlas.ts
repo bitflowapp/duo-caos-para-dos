@@ -123,8 +123,10 @@ export async function buildTextures(
     onProgress?.(done / Math.max(1, total));
   };
 
-  // Rasterizado en tandas para no saturar el decodificador en celulares.
-  const BATCH = 10;
+  // Rasterizado en tandas chicas, cediendo el hilo principal entre tandas para que
+  // la interfaz siga respondiendo mientras se generan las texturas.
+  const BATCH = 6;
+  const yieldToMain = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
   for (let i = 0; i < packed.length; i += BATCH) {
     const chunk = packed.slice(i, i + BATCH);
     const imgs = await Promise.all(chunk.map((p) => loadSvg(withSize(p.entry.svg, p.pw, p.ph)).catch(() => null)));
@@ -134,6 +136,7 @@ export async function buildTextures(
       if (img && ctx) ctx.drawImage(img, p.x, p.y, p.pw, p.ph);
       step();
     });
+    await yieldToMain();
   }
 
   canvases.forEach((c, i) => {
@@ -168,6 +171,7 @@ export async function buildTextures(
       refs.set(entry.key, { atlas: key, frame: '__BASE', w: entry.w, h: entry.h, res: c.width / entry.w });
       step();
     });
+    await yieldToMain();
   }
 }
 

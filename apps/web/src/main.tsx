@@ -48,10 +48,15 @@ if (rootEl) {
   );
 }
 
-// Phaser se carga en paralelo: la interfaz aparece de inmediato.
+// Phaser se carga cuando la página ya respondió: la interfaz aparece primero.
 const gameEl = document.getElementById('game-root');
 if (gameEl) {
-  void import('./game/PhaserGame').then(({ createGame }) => createGame(gameEl));
+  const start = (): void => {
+    void import('./game/PhaserGame').then(({ createGame }) => createGame(gameEl));
+  };
+  const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+  if (idle) idle(start, { timeout: 1200 });
+  else setTimeout(start, 300);
 }
 
 // Conexión temprana (el servidor gratuito puede tardar en despertar).
