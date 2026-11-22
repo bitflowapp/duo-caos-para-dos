@@ -45,14 +45,14 @@ export const RESULTS_TRACK: TrackDef = {
   swing: { amount: 0.12, unit: 16 },
   echo: { steps: 3, feedback: 0.3, wet: 0.22 },
   voices: [
-    { name: 'melody', inst: 'flute', gain: 0.6, pan: 0.08, lowpass: 3600, echo: 0.3 },
-    { name: 'ep', inst: 'ep', gain: 0.42, pan: -0.15, echo: 0.15 },
-    { name: 'bell', inst: 'bell', gain: 0.3, pan: 0.35, echo: 0.45 },
-    { name: 'bass', inst: 'bass', gain: 0.58, gate: 0.9 },
-    { name: 'pad', inst: 'pad', gain: 0.18, lowpass: 1500 },
-    { name: 'kick', inst: 'drums', gain: 0.45 },
-    { name: 'clap', inst: 'drums', gain: 0.28, pan: -0.1 },
-    { name: 'shaker', inst: 'drums', gain: 0.24, pan: 0.3 },
+    { name: 'melody', inst: 'flute', gain: 0.64, pan: 0.08, lowpass: 3600, echo: 0.3 },
+    { name: 'ep', inst: 'ep', gain: 0.62, pan: -0.15, echo: 0.15 },
+    { name: 'bell', inst: 'bell', gain: 0.49, pan: 0.35, echo: 0.45 },
+    { name: 'bass', inst: 'bass', gain: 1.14, gate: 0.9, opts: { cutoff: 600 } },
+    { name: 'pad', inst: 'pad', gain: 0.17, lowpass: 1500 },
+    { name: 'kick', inst: 'drums', gain: 0.95 },
+    { name: 'clap', inst: 'drums', gain: 1.42, pan: -0.1 },
+    { name: 'shaker', inst: 'drums', gain: 0.82, pan: 0.3 },
   ],
   sections: [
     {

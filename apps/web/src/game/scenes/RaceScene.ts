@@ -32,7 +32,7 @@ import { CharacterRig, type Pose } from '../CharacterRig';
 import { Fx, vibrate } from '../fx';
 import { RacePredictor } from '../net/RacePredictor';
 import { autopilot } from '../autopilot';
-import { ParallaxLayer, PerfMonitor, currentTick, fitZoom, keepAwake, makeNameTag, mySlot } from './common';
+import { ParallaxLayer, PerfMonitor, currentTick, fitZoom, keepAwake, makeNameTag, mySlot, viewRect } from './common';
 
 const COLUMN = 512;
 const CHAOS_NAMES: Record<string, string> = {
@@ -65,6 +65,8 @@ export class RaceScene extends Phaser.Scene {
   private theme: RaceTheme = 'beach';
   private columns = new Map<number, Phaser.GameObjects.GameObject[]>();
   private visibleCols = new Set<number>();
+  /** Cuántas columnas visibles contienen a cada objeto (los anchos ocupan varias). */
+  private colRefs = new Map<Phaser.GameObjects.GameObject, number>();
   private hearts: Phaser.GameObjects.Image[] = [];
   private boxes: Phaser.GameObjects.Image[] = [];
   private gulls: Phaser.GameObjects.Image[] = [];
@@ -99,6 +101,7 @@ export class RaceScene extends Phaser.Scene {
     this.fx = new Fx(this);
     this.columns.clear();
     this.visibleCols.clear();
+    this.colRefs.clear();
     this.hearts = [];
     this.boxes = [];
     this.gulls = [];
@@ -225,19 +228,19 @@ export class RaceScene extends Phaser.Scene {
         const fill = addTile(this, r.x0, fillTop, r.x1 - r.x0, bottom - fillTop, `gfill_${theme}`).setOrigin(0, 0).setDepth(0);
         this.addToColumn(fill, r.x0, r.x1);
       }
-      const top = addTile(this, r.x0 - 2, r.y0 - 6, r.x1 - r.x0 + 4, 36, `gtop_${theme}`).setOrigin(0, 0).setDepth(1);
+      const top = addTile(this, r.x0 - 2, r.y0 - 5, r.x1 - r.x0 + 4, 32, `gtop_${theme}`).setOrigin(0, 0).setDepth(1);
       this.addToColumn(top, r.x0, r.x1);
     }
     for (const p of c.platforms) {
-      const plank = addTile(this, p.x0, p.y0 - 2, p.x1 - p.x0, 26, 'plank').setOrigin(0, 0).setDepth(2);
+      const plank = addTile(this, p.x0, p.y0 - 3, p.x1 - p.x0, 32, 'plank').setOrigin(0, 0).setDepth(2);
       this.addToColumn(plank, p.x0, p.x1);
     }
     for (const m of c.mud) {
-      const mud = addTile(this, m.x0, m.y1 - 22, m.x1 - m.x0, 24, 'mud').setOrigin(0, 0).setDepth(3);
+      const mud = addTile(this, m.x0, m.y1 - 30, m.x1 - m.x0, 32, 'mud').setOrigin(0, 0).setDepth(3);
       this.addToColumn(mud, m.x0, m.x1);
     }
     for (const b of c.boosts) {
-      const t = addTile(this, b.x0, b.y1 - 40, b.x1 - b.x0, 40, 'boost').setOrigin(0, 0).setDepth(3);
+      const t = addTile(this, b.x0, b.y1 - 62, b.x1 - b.x0, 64, 'boost').setOrigin(0, 0).setDepth(3);
       this.boostTiles.push(t);
       this.addToColumn(t, b.x0, b.x1);
     }
@@ -251,7 +254,7 @@ export class RaceScene extends Phaser.Scene {
       const cx = (hz.x0 + hz.x1) / 2;
       if (hz.kind === 'urchin') obj = addImage(this, cx, hz.y1 + 3, 'urchin').setOrigin(0.5, 1);
       else if (hz.kind === 'crab') obj = addImage(this, cx, hz.y1 + 3, 'crab').setOrigin(0.5, 1);
-      else if (hz.kind === 'spikes') obj = addTile(this, hz.x0, hz.y1 - 24, hz.x1 - hz.x0, 24, 'spikes').setOrigin(0, 0);
+      else if (hz.kind === 'spikes') obj = addTile(this, hz.x0, hz.y1 - 30, hz.x1 - hz.x0, 32, 'spikes').setOrigin(0, 0);
       else if (hz.kind === 'branch') {
         const img = addImage(this, cx, (hz.y0 + hz.y1) / 2 - 4, 'branch');
         img.setDisplaySize(hz.x1 - hz.x0 + 40, 84);
@@ -275,11 +278,11 @@ export class RaceScene extends Phaser.Scene {
       const flag = addImage(this, cp.x - 34, cp.y + 4, 'flagpost').setOrigin(0.5, 1).setDepth(-4);
       this.addToColumn(flag, cp.x - 60, cp.x);
     });
-    const startLine = addTile(this, c.startX + 30, -2, 24, 26, 'startline').setOrigin(0, 0).setDepth(2);
+    const startLine = addTile(this, c.startX + 30, -2, 32, 32, 'startline').setOrigin(0, 0).setDepth(2);
     this.addToColumn(startLine, c.startX, c.startX + 60);
     const arch = addImage(this, c.finishX, 6, 'finish').setOrigin(0.5, 1).setDepth(15);
     this.addToColumn(arch, c.finishX - 160, c.finishX + 160);
-    const finishLine = addTile(this, c.finishX - 12, -2, 24, 26, 'startline').setOrigin(0, 0).setDepth(2);
+    const finishLine = addTile(this, c.finishX - 16, -2, 32, 32, 'startline').setOrigin(0, 0).setDepth(2);
     this.addToColumn(finishLine, c.finishX - 20, c.finishX + 20);
 
     for (const h of c.hearts) {
@@ -540,7 +543,7 @@ export class RaceScene extends Phaser.Scene {
         rig.flicker = st.invuln > 0 && st.stun === 0;
         rig.shadowY = 0;
         rig.setFacing(st.vx < -20 ? -1 : 1);
-        this.tags[slot].setPosition(rig.x, rig.y - 98);
+        this.tags[slot].setPosition(rig.x, rig.y - 112);
       }
       this.lastRespawn[slot] = st.respawn;
       rig.update(dt);
@@ -564,7 +567,7 @@ export class RaceScene extends Phaser.Scene {
       }
       if (st.stunKind === STUN_KIND.Kiss && st.stun > 0 && Math.random() < 0.08) this.fx.hearts(rig.x, rig.y - 80, 1);
     }
-    this.marker.setPosition(this.rigs[this.me].x - 8, this.rigs[this.me].y - 118);
+    this.marker.setPosition(this.rigs[this.me].x - 8, this.rigs[this.me].y - 136);
     this.marker.setVisible(this.rigs[this.me].visible);
 
     this.updateKisses(dt);
@@ -599,7 +602,7 @@ export class RaceScene extends Phaser.Scene {
     this.camY += (targetY - this.camY) * Math.min(1, dt * 4);
     cam.scrollX = focusX - viewW * 0.3 - (cam.width - viewW) / 2;
     cam.scrollY = this.camY - viewH * 0.7 - (cam.height - viewH) / 2;
-    const wv = cam.worldView;
+    const wv = viewRect(cam);
     this.sky.setPosition(wv.x - 4, wv.y - 4).setScale((wv.width + 8) / 100, (wv.height + 8) / 100);
     this.sun.setPosition(wv.x + wv.width * 0.8, wv.y + wv.height * 0.18);
     this.farA.update(cam);
@@ -634,16 +637,29 @@ export class RaceScene extends Phaser.Scene {
   }
 
   private updateWorldVisibility(mine: RunnerState): void {
-    const wv = this.cameras.main.worldView;
+    const wv = viewRect(this.cameras.main);
     const c0 = Math.floor((wv.x - 200) / COLUMN);
     const c1 = Math.floor((wv.right + 200) / COLUMN);
     const next = new Set<number>();
     for (let c = c0; c <= c1; c++) next.add(c);
-    for (const c of this.visibleCols) {
-      if (!next.has(c)) for (const o of this.columns.get(c) ?? []) (o as unknown as Phaser.GameObjects.Components.Visible).setVisible(false);
-    }
+    const setVis = (o: Phaser.GameObjects.GameObject, v: boolean): void => {
+      (o as unknown as Phaser.GameObjects.Components.Visible).setVisible(v);
+    };
     for (const c of next) {
-      if (!this.visibleCols.has(c)) for (const o of this.columns.get(c) ?? []) (o as unknown as Phaser.GameObjects.Components.Visible).setVisible(true);
+      if (this.visibleCols.has(c)) continue;
+      for (const o of this.columns.get(c) ?? []) {
+        const n = (this.colRefs.get(o) ?? 0) + 1;
+        this.colRefs.set(o, n);
+        if (n === 1) setVis(o, true);
+      }
+    }
+    for (const c of this.visibleCols) {
+      if (next.has(c)) continue;
+      for (const o of this.columns.get(c) ?? []) {
+        const n = Math.max(0, (this.colRefs.get(o) ?? 0) - 1);
+        this.colRefs.set(o, n);
+        if (n === 0) setVis(o, false);
+      }
     }
     this.visibleCols = next;
 

@@ -58,6 +58,7 @@ export function startDirector(game: Phaser.Game): void {
 export function directorReady(): void {
   ready = true;
   document.getElementById('game-root')?.classList.add('ready');
+  if (gameRef?.scene.isActive('boot')) gameRef.scene.stop('boot');
   apply();
 }
 

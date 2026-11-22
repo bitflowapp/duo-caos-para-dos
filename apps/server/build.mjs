@@ -1,4 +1,6 @@
-// Empaqueta el servidor (incluido @duo/shared) en un único archivo ESM.
+// Empaqueta el servidor (incluido @duo/shared, que es código fuente TS del
+// monorepo) en un único archivo ESM. Las dependencias de runtime quedan externas
+// y se instalan con `npm ci --omit=dev -w @duo/server`.
 import { build } from 'esbuild';
 
 await build({
@@ -9,25 +11,7 @@ await build({
   target: 'node20',
   format: 'esm',
   sourcemap: true,
-  // Dependencias de runtime se resuelven desde node_modules.
-  packages: 'external',
-  // @duo/shared es código fuente TypeScript del monorepo: se incluye en el bundle.
-  plugins: [
-    {
-      name: 'bundle-workspace',
-      setup(b) {
-        b.onResolve({ filter: /^@duo\/shared/ }, async (args) => {
-          if (args.pluginData?.inner) return undefined;
-          const r = await b.resolve(args.path, {
-            kind: args.kind,
-            resolveDir: args.resolveDir,
-            pluginData: { inner: true },
-          });
-          return { path: r.path, external: false };
-        });
-      },
-    },
-  ],
+  external: ['socket.io', 'zod'],
   banner: {
     js: "import { createRequire as __duoCreateRequire } from 'node:module'; const require = __duoCreateRequire(import.meta.url);",
   },

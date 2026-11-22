@@ -130,7 +130,8 @@ class NetClient {
   private onState(s: RoomState): void {
     this.clock.seed(s.serverNow);
     const prev = store.get().room;
-    store.set({ room: s, view: 'room' });
+    const view = store.get().view;
+    store.set({ room: s, view: view === 'settings' || view === 'profile' ? view : 'room' });
     if (prev && prev.players && s.players) {
       const me = store.get().session?.slot;
       const other = me === 0 ? 1 : 0;

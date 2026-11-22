@@ -1,0 +1,18 @@
+# Blueprint de Render (plan gratuito). Un solo servicio web: sirve el cliente
+# estático y el servidor Socket.IO por el mismo origen (HTTPS/WSS de Render).
+services:
+  - type: web
+    name: duo-caos-para-dos
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node apps/server/dist/index.js
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: '1'

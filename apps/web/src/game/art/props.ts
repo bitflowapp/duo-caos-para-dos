@@ -132,8 +132,8 @@ export function propEntries(): ArtEntry[] {
     e(
       'spikes',
       32,
-      24,
-      `<path d="M0 24 L5 4 L10 24 Z M11 24 L16 0 L21 24 Z M22 24 L27 6 L32 24 Z" fill="#c7d2ff" stroke="${L}" stroke-width="2" stroke-linejoin="round"/><path d="M15 6 L16 2" stroke="#fff" stroke-width="2"/>`,
+      32,
+      `<path d="M0 32 L5 12 L10 32 Z M11 32 L16 8 L21 32 Z M22 32 L27 14 L32 32 Z" fill="#c7d2ff" stroke="${L}" stroke-width="2" stroke-linejoin="round"/><path d="M15 14 L16 10" stroke="#fff" stroke-width="2"/>`,
     ),
     e(
       'spring',
@@ -143,17 +143,17 @@ export function propEntries(): ArtEntry[] {
     ),
     e(
       'boost',
-      120,
-      40,
-      `<rect x="2" y="26" width="116" height="12" rx="6" fill="#2b1650" opacity="0.5"/>${[0, 1, 2]
-        .map((i) => `<path d="M${14 + i * 34} 8 L${36 + i * 34} 22 L${14 + i * 34} 36 L${22 + i * 34} 22 Z" fill="#ffd25e" stroke="${L}" stroke-width="2.4" stroke-linejoin="round"/>`)
+      128,
+      64,
+      `<rect x="0" y="50" width="128" height="12" rx="6" fill="#2b1650" opacity="0.45"/>${[0, 1, 2]
+        .map((i) => `<path d="M${16 + i * 38} 30 L${38 + i * 38} 44 L${16 + i * 38} 58 L${24 + i * 38} 44 Z" fill="#ffd25e" stroke="${L}" stroke-width="2.4" stroke-linejoin="round"/>`)
         .join('')}`,
     ),
     e(
       'mud',
       64,
-      24,
-      `<path d="M0 10 Q16 4 32 9 Q48 14 64 8 L64 24 L0 24 Z" fill="#7a4a2c"/><path d="M0 10 Q16 4 32 9 Q48 14 64 8" fill="none" stroke="#9a6440" stroke-width="3"/><circle cx="18" cy="15" r="3" fill="#9a6440"/><circle cx="46" cy="17" r="2" fill="#9a6440"/>`,
+      32,
+      `<path d="M0 18 Q16 12 32 17 Q48 22 64 16 L64 32 L0 32 Z" fill="#7a4a2c"/><path d="M0 18 Q16 12 32 17 Q48 22 64 16" fill="none" stroke="#9a6440" stroke-width="3"/><circle cx="18" cy="23" r="3" fill="#9a6440"/><circle cx="46" cy="25" r="2" fill="#9a6440"/>`,
     ),
     e(
       'box',
@@ -197,9 +197,9 @@ export function propEntries(): ArtEntry[] {
     ),
     e(
       'startline',
-      24,
-      12,
-      `<rect width="12" height="6" fill="#fff"/><rect x="12" width="12" height="6" fill="${L}"/><rect y="6" width="12" height="6" fill="${L}"/><rect x="12" y="6" width="12" height="6" fill="#fff"/>`,
+      32,
+      16,
+      `<rect width="16" height="8" fill="#fff"/><rect x="16" width="16" height="8" fill="${L}"/><rect y="8" width="16" height="8" fill="${L}"/><rect x="16" y="8" width="16" height="8" fill="#fff"/>`,
     ),
     // ── Ítems ──
     e('item_turbo', 48, 48, itemIcon('turbo')),

@@ -123,7 +123,7 @@ export function environmentEntries(): ArtEntry[] {
   for (const t of themes) {
     out.push(e(`far_${t}`, 1024, 320, farLayer(t)));
     out.push(e(`mid_${t}`, 1024, 280, midLayer(t)));
-    out.push(e(`gtop_${t}`, 64, 36, groundTop(t)));
+    out.push(e(`gtop_${t}`, 64, 32, `<g transform="scale(1 0.8889)">${groundTop(t)}</g>`));
     out.push(e(`gfill_${t}`, 64, 64, groundFill(t)));
   }
   out.push(
@@ -148,14 +148,14 @@ export function environmentEntries(): ArtEntry[] {
     e(
       'waves',
       256,
-      40,
-      `<path d="M0 14 Q32 2 64 14 T128 14 T192 14 T256 14 L256 40 L0 40 Z" fill="#4fb3e6"/><path d="M0 14 Q32 2 64 14 T128 14 T192 14 T256 14" fill="none" stroke="#dff6ff" stroke-width="4"/>`,
+      32,
+      `<path d="M0 12 Q32 2 64 12 T128 12 T192 12 T256 12 L256 32 L0 32 Z" fill="#4fb3e6"/><path d="M0 12 Q32 2 64 12 T128 12 T192 12 T256 12" fill="none" stroke="#dff6ff" stroke-width="4"/>`,
     ),
     e(
       'plank',
       64,
-      26,
-      `<rect x="1" y="2" width="62" height="22" rx="5" fill="#c08a5a" stroke="${L}" stroke-width="2.6"/><path d="M6 9 L58 9" stroke="#e0aa76" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="17" r="2" fill="${L}"/><circle cx="56" cy="17" r="2" fill="${L}"/>`,
+      32,
+      `<rect x="1" y="3" width="62" height="24" rx="5" fill="#c08a5a" stroke="${L}" stroke-width="2.6"/><path d="M6 11 L58 11" stroke="#e0aa76" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="19" r="2" fill="${L}"/><circle cx="56" cy="19" r="2" fill="${L}"/>`,
     ),
     // ── Templo (Sincronizados) ──
     e(
@@ -167,8 +167,8 @@ export function environmentEntries(): ArtEntry[] {
     e(
       't_bricktop',
       48,
-      18,
-      `<rect y="4" width="48" height="14" fill="#6b7a8c"/><path d="M0 6 Q8 14 16 6 Q24 14 32 6 Q40 14 48 6 L48 0 L0 0 Z" fill="#6fc07a"/><path d="M0 6 Q8 14 16 6 Q24 14 32 6 Q40 14 48 6" fill="none" stroke="${L}" stroke-width="2"/>`,
+      24,
+      `<path d="M0 8 Q8 16 16 8 Q24 16 32 8 Q40 16 48 8 L48 0 L0 0 Z" fill="#6fc07a"/><path d="M0 8 Q8 16 16 8 Q24 16 32 8 Q40 16 48 8" fill="none" stroke="${L}" stroke-width="2"/><path d="M6 3 L12 2 M30 4 L36 3" stroke="#a8e6a0" stroke-width="2" stroke-linecap="round"/>`,
     ),
     e(
       't_wall',
@@ -223,8 +223,8 @@ export function environmentEntries(): ArtEntry[] {
     e(
       't_bridge',
       48,
-      22,
-      `<rect x="1" y="2" width="46" height="18" rx="3" fill="#c08a5a" stroke="${L}" stroke-width="2.4"/><path d="M5 8 L43 8" stroke="#e0aa76" stroke-width="2.2" stroke-linecap="round"/>`,
+      24,
+      `<rect x="1" y="2" width="46" height="20" rx="3" fill="#c08a5a" stroke="${L}" stroke-width="2.4"/><path d="M5 9 L43 9" stroke="#e0aa76" stroke-width="2.2" stroke-linecap="round"/>`,
     ),
     e(
       't_elev',
@@ -261,14 +261,14 @@ export function environmentEntries(): ArtEntry[] {
     e(
       't_water',
       64,
-      40,
-      `<rect y="8" width="64" height="32" fill="#2f8fd0" opacity="0.85"/><path d="M0 10 Q16 2 32 10 T64 10" fill="none" stroke="#bfe9ff" stroke-width="3"/>`,
+      32,
+      `<path d="M0 10 Q16 2 32 10 T64 10 L64 32 L0 32 Z" fill="#2f8fd0"/><path d="M0 10 Q16 2 32 10 T64 10" fill="none" stroke="#bfe9ff" stroke-width="3"/>`,
     ),
     e(
       't_thorns',
       48,
-      22,
-      `<path d="M0 22 L6 4 L12 22 Z M12 22 L18 0 L24 22 Z M24 22 L30 6 L36 22 Z M36 22 L42 2 L48 22 Z" fill="#b6f2e6" stroke="${L}" stroke-width="2" stroke-linejoin="round"/>`,
+      24,
+      `<path d="M0 24 L6 6 L12 24 Z M12 24 L18 2 L24 24 Z M24 24 L30 8 L36 24 Z M36 24 L42 4 L48 24 Z" fill="#b6f2e6" stroke="${L}" stroke-width="2" stroke-linejoin="round"/>`,
     ),
     e(
       't_vine',
@@ -327,9 +327,9 @@ export function environmentEntries(): ArtEntry[] {
     ),
     e(
       'q_curtain',
-      120,
-      600,
-      `<rect width="120" height="600" fill="#a8274f"/>${[10, 40, 70, 100].map((x) => `<path d="M${x} 0 Q${x + 12} 300 ${x} 600" fill="none" stroke="#7e1c3c" stroke-width="10"/>`).join('')}<path d="M0 0 H120 V40 Q60 70 0 40 Z" fill="#c23a62"/>`,
+      128,
+      512,
+      `<rect width="128" height="512" fill="#a8274f"/>${[12, 44, 76, 108].map((x) => `<path d="M${x} 0 Q${x + 12} 256 ${x} 512" fill="none" stroke="#7e1c3c" stroke-width="10"/>`).join('')}`,
     ),
     e('q_bulb', 20, 20, `<circle cx="10" cy="10" r="7" fill="#ffe27a" stroke="${L}" stroke-width="2"/><circle cx="8" cy="8" r="2.4" fill="#fff"/>`),
   );

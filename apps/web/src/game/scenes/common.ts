@@ -5,6 +5,18 @@ import { store } from '../../state/store';
 import { currentDpr, setDpr, viewportSize } from '../PhaserGame';
 import { addImage, frameOf } from '../art/atlas';
 
+/**
+ * Rectángulo visible del mundo calculado al instante (camera.worldView se
+ * actualiza recién en el próximo render y quedaría un cuadro atrasado).
+ */
+export function viewRect(cam: Phaser.Cameras.Scene2D.Camera): { x: number; y: number; width: number; height: number; right: number; bottom: number; centerX: number; centerY: number } {
+  const w = cam.width / cam.zoom;
+  const h = cam.height / cam.zoom;
+  const x = cam.scrollX + (cam.width - w) / 2;
+  const y = cam.scrollY + (cam.height - h) / 2;
+  return { x, y, width: w, height: h, right: x + w, bottom: y + h, centerX: x + w / 2, centerY: y + h / 2 };
+}
+
 /** Zoom de cámara para ver al menos `minW × minH` unidades de mundo. */
 export function fitZoom(minW: number, minH: number): { zoom: number; cssW: number; cssH: number; portrait: boolean } {
   const { w, h } = viewportSize();

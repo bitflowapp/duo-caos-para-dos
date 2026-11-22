@@ -255,22 +255,24 @@ const pizz: InstrumentFn = (ctx, v, out, p, o) => {
   v.run(os, p.t, p.t + dec + 0.02);
 };
 
-/** Bajo: onda + seno de refuerzo por un filtro con leve "mordida" inicial. */
+/**
+ * Bajo: sierra filtrada (armónicos audibles en parlantes de celular) con leve
+ * "mordida" del filtro, más un seno sub-grave a menor nivel para el cuerpo.
+ */
 const bass: InstrumentFn = (ctx, v, out, p, o) => {
   const f = midiToFreq(p.midi);
-  const wave = o.wave ?? 'triangle';
-  const cutoff = o.cutoff ?? (wave === 'triangle' ? 2200 : 850);
-  const flt = biquad(ctx, v, 'lowpass', cutoff, 1);
+  const cutoff = o.cutoff ?? 700;
+  const flt = biquad(ctx, v, 'lowpass', cutoff, 0.9);
   glide(flt.frequency, p.t, cutoff * 1.8, cutoff, 0.12);
   const g = gainNode(ctx, v);
-  const o1 = osc(ctx, wave, f);
-  const o2 = osc(ctx, 'sine', f);
-  o1.connect(flt);
-  o2.connect(flt);
-  chain(flt, g, out);
+  const main = osc(ctx, o.wave ?? 'sawtooth', f);
+  chain(main, flt, g, out);
+  const sub = osc(ctx, 'sine', f);
+  const subGain = gainNode(ctx, v, 0.5);
+  chain(sub, subGain, g);
   const end = adsr(g.gain, p.t, 0.42 * p.vel, 0.006, 0.12, 0.72, p.t + p.dur, 0.05);
-  v.run(o1, p.t, end);
-  v.run(o2, p.t, end);
+  v.run(main, p.t, end);
+  v.run(sub, p.t, end);
 };
 
 /** Pad: dos ondas suaves desafinadas, ataque y salida lentos. */
@@ -382,7 +384,7 @@ const bell: InstrumentFn = (ctx, v, out, p, o) => {
   mg.connect(car.frequency);
   const g = gainNode(ctx, v);
   chain(car, g, out);
-  const end = perc(g.gain, p.t, 0.32 * p.vel, 0.002, 1.2 * k);
+  const end = perc(g.gain, p.t, 0.45 * p.vel, 0.002, 1.2 * k);
   v.run(car, p.t, end + 0.02);
   v.run(mod, p.t, end + 0.02);
 };
@@ -465,8 +467,8 @@ const drums: InstrumentFn = (ctx, v, out, p) => {
       toneHit(ctx, v, out, t, 'triangle', 1300, 180, 0.02, 0.18 * vel, 0.025);
       break;
     case 37: // aro
-      toneHit(ctx, v, out, t, 'triangle', 1750, 1650, 0.01, 0.2 * vel, 0.028);
-      noiseHit(ctx, v, out, t, 'bandpass', 2600, 1.5, 0.2 * vel, 0.015);
+      toneHit(ctx, v, out, t, 'triangle', 1750, 1650, 0.01, 0.45 * vel, 0.028);
+      noiseHit(ctx, v, out, t, 'bandpass', 2600, 1.5, 0.4 * vel, 0.015);
       break;
     case 38:
     case 40: // caja: ruido + cuerpo
@@ -520,7 +522,7 @@ const drums: InstrumentFn = (ctx, v, out, p) => {
       toneHit(ctx, v, out, t, 'triangle', 820, 700, 0.02, 0.35 * vel, 0.07);
       break;
     default: // maracas / shaker
-      noiseHit(ctx, v, out, t, 'bandpass', 5500, 1.2, 0.2 * vel, 0.06, 0.008);
+      noiseHit(ctx, v, out, t, 'bandpass', 5500, 1.2, 0.42 * vel, 0.06, 0.008);
       break;
   }
 };

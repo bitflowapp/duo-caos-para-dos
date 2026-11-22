@@ -5,7 +5,7 @@ import { store } from '../../state/store';
 import { addImage, addTile } from '../art/atlas';
 import { CharacterRig } from '../CharacterRig';
 import { Fx } from '../fx';
-import { ParallaxLayer, fitZoom, mySlot } from './common';
+import { ParallaxLayer, fitZoom, mySlot, viewRect } from './common';
 
 interface Look {
   character: CharacterId;
@@ -50,8 +50,8 @@ export class MenuScene extends Phaser.Scene {
     this.sun = addImage(this, 0, 0, 'sun').setDepth(-95);
     for (let i = 0; i < 4; i++) this.clouds.push(addImage(this, i * 420, -300 - (i % 2) * 70, i % 2 ? 'cloud1' : 'cloud2').setDepth(-90).setAlpha(0.75).setTint(0xffd6e8));
     this.far = new ParallaxLayer(this, 'far_beach', 1, 30, -80, 1);
-    this.waves = addTile(this, -2000, 0, 6000, 40, 'waves').setOrigin(0, 0).setDepth(-60).setTint(0xffc0a8);
-    this.sand = addTile(this, -2000, 0, 6000, 36, 'gtop_beach').setOrigin(0, 0).setDepth(-20);
+    this.waves = addTile(this, -2000, 0, 6000, 32, 'waves').setOrigin(0, 0).setDepth(-60).setTint(0xffc0a8);
+    this.sand = addTile(this, -2000, 0, 6000, 32, 'gtop_beach').setOrigin(0, 0).setDepth(-20);
     this.sandFill = addTile(this, -2000, 0, 6000, 600, 'gfill_beach').setOrigin(0, 0).setDepth(-21);
     for (let i = 0; i < 2; i++) this.palms.push(addImage(this, 0, 0, 'palm').setOrigin(0.5, 1).setDepth(-15));
     for (const k of ['shell', 'flower', 'shell']) this.props.push(addImage(this, 0, 0, k).setOrigin(0.5, 1).setDepth(-10));
@@ -97,7 +97,6 @@ export class MenuScene extends Phaser.Scene {
         rig.react({ eyes: 'happy', mouth: 'grin' }, 0.8);
         rig.hop();
         this.rigs[i] = rig;
-        this.fx.sparkle(0, 0, 0);
       }
     });
     this.layout();
@@ -129,7 +128,7 @@ export class MenuScene extends Phaser.Scene {
       else if (res.winner === null) rig.setPose('celebrate');
       else rig.setPose(res.winner === i ? 'celebrate' : 'sad');
     });
-    const wv = this.cameras.main.worldView;
+    const wv = viewRect(this.cameras.main);
     this.time.delayedCall(250, () => this.fx.confetti(wv.centerX, wv.y + wv.height * 0.2, 70));
     // Después del festejo: abrazo (o consuelo) — el romance como reacción, no obligación.
     this.time.delayedCall(2600, () => {
@@ -169,7 +168,7 @@ export class MenuScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.setZoom(zoom);
     cam.centerOn(0, -120);
-    const wv = cam.worldView;
+    const wv = viewRect(cam);
     const groundY = wv.bottom - wv.height * (portrait ? 0.15 : 0.13);
     this.sky.setPosition(wv.x - 10, wv.y - 10).setScale((wv.width + 20) / 100, (wv.height + 20) / 100);
     this.sun.setPosition(wv.centerX + wv.width * 0.18, groundY - wv.height * 0.32);
@@ -192,7 +191,7 @@ export class MenuScene extends Phaser.Scene {
     const dt = Math.min(0.1, deltaMs / 1000);
     this.t += dt;
     this.waves.tilePositionX += dt * 18;
-    const wv = this.cameras.main.worldView;
+    const wv = viewRect(this.cameras.main);
     this.clouds.forEach((c, i) => {
       c.x += dt * (8 + i * 3);
       if (c.x > wv.right + 200) c.x = wv.x - 200;

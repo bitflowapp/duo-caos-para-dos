@@ -6,7 +6,7 @@ import { store } from '../../state/store';
 import { addImage, addTile } from '../art/atlas';
 import { CharacterRig } from '../CharacterRig';
 import { Fx } from '../fx';
-import { fitZoom, keepAwake, makeNameTag } from './common';
+import { fitZoom, keepAwake, makeNameTag, viewRect } from './common';
 
 /** Estudio de televisión de "¿Cuánto me conocés?": podios, luces y reacciones. */
 export class QuizScene extends Phaser.Scene {
@@ -98,7 +98,7 @@ export class QuizScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.setZoom(zoom);
     cam.centerOn(0, 0);
-    const wv = cam.worldView;
+    const wv = viewRect(cam);
     this.bg.setPosition(wv.x - 10, wv.y - 10).setScale((wv.width + 20) / 100, (wv.height + 20) / 100);
     const floorY = wv.y + wv.height * (portrait ? 0.4 : 0.5);
     this.floor.setPosition(wv.x - 10, floorY).setScale((wv.width + 20) / 100, (wv.bottom - floorY + 10) / 100);
@@ -144,7 +144,7 @@ export class QuizScene extends Phaser.Scene {
     }
     if (reveal && reveal.q !== this.lastReveal) {
       this.lastReveal = reveal.q;
-      const wv = this.cameras.main.worldView;
+      const wv = viewRect(this.cameras.main);
       if (reveal.outcome === 'match') {
         this.rigs.forEach((r) => r.setPose('celebrate'));
         this.fx.confetti(wv.centerX, wv.y + wv.height * 0.15, 40);

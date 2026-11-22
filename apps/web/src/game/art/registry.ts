@@ -67,6 +67,36 @@ export const STANDALONE = new Set<string>([
   'q_spot',
 ]);
 
+/**
+ * Densidad fija para texturas que se repiten (TileSprite): así el cuadro mide una
+ * potencia de 2 exacta en píxeles y no se remuestrea (sin costuras).
+ */
+export const TILE_RES: Record<string, number> = {
+  gfill_beach: 2,
+  gfill_jungle: 2,
+  gfill_cliffs: 2,
+  gfill_volcano: 2,
+  gtop_beach: 2,
+  gtop_jungle: 2,
+  gtop_cliffs: 2,
+  gtop_volcano: 2,
+  plank: 2,
+  mud: 2,
+  spikes: 2,
+  boost: 2,
+  startline: 2,
+  waves: 2,
+  t_water: 2,
+  t_brick: 128 / 48,
+  t_bricktop: 128 / 48,
+  t_thorns: 128 / 48,
+  t_bridge: 128 / 48,
+  t_gate_warm: 128 / 48,
+  t_gate_cool: 128 / 48,
+  t_wall: 128 / 96,
+  q_curtain: 1,
+};
+
 /** Fondos grandes a menor densidad (se ven con parallax, no necesitan tanto detalle). */
 export const RES_OVERRIDE_FACTOR: Record<string, number> = {
   far_beach: 0.6,
@@ -77,7 +107,6 @@ export const RES_OVERRIDE_FACTOR: Record<string, number> = {
   mid_jungle: 0.7,
   mid_cliffs: 0.7,
   mid_volcano: 0.7,
-  q_curtain: 0.6,
   q_spot: 0.5,
   t_heartgate: 0.8,
   sun: 0.8,

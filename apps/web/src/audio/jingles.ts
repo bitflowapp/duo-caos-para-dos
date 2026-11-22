@@ -15,12 +15,12 @@ const victory: TrackDef = {
   key: 'Do mayor',
   echo: { steps: 3, feedback: 0.25, wet: 0.18 },
   voices: [
-    { name: 'lead', inst: 'lead', gain: 0.5, lowpass: 3600, echo: 0.2 },
-    { name: 'brass', inst: 'brass', gain: 0.55, pan: -0.2 },
-    { name: 'bass', inst: 'bass', gain: 0.55, opts: { wave: 'sawtooth', cutoff: 900 } },
-    { name: 'bell', inst: 'bell', gain: 0.35, pan: 0.3, echo: 0.4 },
+    { name: 'lead', inst: 'lead', gain: 0.61, lowpass: 3600, echo: 0.2 },
+    { name: 'brass', inst: 'brass', gain: 0.66, pan: -0.2 },
+    { name: 'bass', inst: 'bass', gain: 1.38, opts: { cutoff: 900 } },
+    { name: 'bell', inst: 'bell', gain: 0.38, pan: 0.3, echo: 0.4 },
     { name: 'kit', inst: 'drums', gain: 0.55 },
-    { name: 'crash', inst: 'drums', gain: 0.32, pan: 0.2 },
+    { name: 'crash', inst: 'drums', gain: 0.63, pan: 0.2 },
   ],
   sections: [
     {
@@ -48,10 +48,10 @@ const defeat: TrackDef = {
   key: 'Do mayor con iv menor',
   echo: { steps: 3, feedback: 0.25, wet: 0.2 },
   voices: [
-    { name: 'melody', inst: 'flute', gain: 0.6, pan: 0.1, echo: 0.25 },
-    { name: 'ep', inst: 'ep', gain: 0.4, pan: -0.15 },
-    { name: 'bass', inst: 'bass', gain: 0.55 },
-    { name: 'kit', inst: 'drums', gain: 0.4 },
+    { name: 'melody', inst: 'flute', gain: 0.84, pan: 0.1, echo: 0.25 },
+    { name: 'ep', inst: 'ep', gain: 0.86, pan: -0.15 },
+    { name: 'bass', inst: 'bass', gain: 1.5 },
+    { name: 'kit', inst: 'drums', gain: 0.99 },
   ],
   sections: [
     {
@@ -77,10 +77,10 @@ const tie: TrackDef = {
   key: 'Do mayor',
   echo: { steps: 3, feedback: 0.3, wet: 0.2 },
   voices: [
-    { name: 'left', inst: 'pizz', gain: 0.6, pan: -0.5, echo: 0.2 },
-    { name: 'right', inst: 'bell', gain: 0.5, pan: 0.5, echo: 0.3 },
-    { name: 'ep', inst: 'ep', gain: 0.35 },
-    { name: 'kit', inst: 'drums', gain: 0.4 },
+    { name: 'left', inst: 'pizz', gain: 1.49, pan: -0.5, echo: 0.2 },
+    { name: 'right', inst: 'bell', gain: 1.06, pan: 0.5, echo: 0.3 },
+    { name: 'ep', inst: 'ep', gain: 0.57 },
+    { name: 'kit', inst: 'drums', gain: 1 },
   ],
   sections: [
     {
@@ -106,13 +106,13 @@ const tourWin: TrackDef = {
   key: 'Do mayor',
   echo: { steps: 3, feedback: 0.3, wet: 0.2 },
   voices: [
-    { name: 'lead', inst: 'lead', gain: 0.5, lowpass: 3800, echo: 0.2 },
-    { name: 'brass', inst: 'brass', gain: 0.58, pan: -0.2 },
-    { name: 'bass', inst: 'bass', gain: 0.55, opts: { wave: 'sawtooth', cutoff: 900 } },
-    { name: 'bell', inst: 'bell', gain: 0.35, pan: 0.3, echo: 0.4 },
-    { name: 'roll', inst: 'drums', gain: 0.4, pan: 0.1 },
-    { name: 'kick', inst: 'drums', gain: 0.55 },
-    { name: 'crash', inst: 'drums', gain: 0.32, pan: -0.2 },
+    { name: 'lead', inst: 'lead', gain: 0.67, lowpass: 3800, echo: 0.2 },
+    { name: 'brass', inst: 'brass', gain: 0.66, pan: -0.2 },
+    { name: 'bass', inst: 'bass', gain: 1.29, opts: { cutoff: 900 } },
+    { name: 'bell', inst: 'bell', gain: 0.42, pan: 0.3, echo: 0.4 },
+    { name: 'roll', inst: 'drums', gain: 0.56, pan: 0.1 },
+    { name: 'kick', inst: 'drums', gain: 1.05 },
+    { name: 'crash', inst: 'drums', gain: 0.81, pan: -0.2 },
   ],
   sections: [
     {
@@ -141,9 +141,9 @@ const achievement: TrackDef = {
   key: 'Do mayor',
   echo: { steps: 3, feedback: 0.3, wet: 0.25 },
   voices: [
-    { name: 'bell', inst: 'bell', gain: 0.45, pan: 0.2, echo: 0.4 },
-    { name: 'pluck', inst: 'pluck', gain: 0.4, pan: -0.2, opts: { wave: 'triangle' } },
-    { name: 'kit', inst: 'drums', gain: 0.3, pan: 0.3 },
+    { name: 'bell', inst: 'bell', gain: 1.1, pan: 0.2, echo: 0.4 },
+    { name: 'pluck', inst: 'pluck', gain: 1.4, pan: -0.2, opts: { wave: 'triangle' } },
+    { name: 'kit', inst: 'drums', gain: 1.2, pan: 0.3 },
   ],
   sections: [
     {

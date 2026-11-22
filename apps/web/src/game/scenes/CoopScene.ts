@@ -25,7 +25,7 @@ import { autopilot } from '../autopilot';
 import { CharacterRig, type Pose } from '../CharacterRig';
 import { Fx, vibrate } from '../fx';
 import { CoopPredictor } from '../net/CoopPredictor';
-import { PerfMonitor, currentTick, fitZoom, keepAwake, makeNameTag, mySlot } from './common';
+import { PerfMonitor, currentTick, fitZoom, keepAwake, makeNameTag, mySlot, viewRect } from './common';
 
 const HINTS = [
   'Uno pisa la placa y el otro cruza la puerta. ¡Después al revés!',
@@ -97,7 +97,9 @@ export class CoopScene extends Phaser.Scene {
       bus.on('event', (ev) => this.onServerEvent(ev)),
       bus.on('emote', (e) => {
         const r = this.rigs?.[e.slot];
-        if (r) (e.id === 'heart' || e.id === 'kiss' ? this.fx.hearts(r.x, r.y - 90, 6) : this.fx.sparkle(r.x, r.y - 90, 6));
+        if (!r) return;
+        if (e.id === 'heart' || e.id === 'kiss') this.fx.hearts(r.x, r.y - 90, 6);
+        else this.fx.sparkle(r.x, r.y - 90, 6);
       }),
     );
     hud.reset('coop', game.matchId);
@@ -158,7 +160,7 @@ export class CoopScene extends Phaser.Scene {
           const open = k <= end && r > 0 && !isSolidTile(L, k, r - 1);
           if (open && run < 0) run = k;
           if (!open && run >= 0) {
-            addTile(this, run * T, r * T - 6, (k - run) * T, 18, 't_bricktop').setOrigin(0, 0).setDepth(1);
+            addTile(this, run * T, r * T - 8, (k - run) * T, 24, 't_bricktop').setOrigin(0, 0).setDepth(1);
             run = -1;
           }
         }
@@ -166,17 +168,20 @@ export class CoopScene extends Phaser.Scene {
       }
     }
 
-    for (const p of L.platforms) addTile(this, p.x0, p.y0 - 2, p.x1 - p.x0, 26, 'plank').setOrigin(0, 0).setDepth(2);
+    for (const p of L.platforms) addTile(this, p.x0, p.y0 - 3, p.x1 - p.x0, 32, 'plank').setOrigin(0, 0).setDepth(2);
     for (const h of L.hazards) {
       if (h.kind === 'water') {
-        const w = addTile(this, h.x0, h.y0 - 6, h.x1 - h.x0, h.y1 - h.y0 + 6, 't_water').setOrigin(0, 0).setDepth(8).setAlpha(0.9);
+        const body = this.add.graphics().setDepth(8);
+        body.fillStyle(0x2f8fd0, 0.88);
+        body.fillRect(h.x0, h.y0 + 20, h.x1 - h.x0, h.y1 - h.y0);
+        const w = addTile(this, h.x0, h.y0 - 8, h.x1 - h.x0, 32, 't_water').setOrigin(0, 0).setDepth(8).setAlpha(0.95);
         this.waters.push(w);
       } else {
-        addTile(this, h.x0, h.y1 - 22, h.x1 - h.x0, 22, 't_thorns').setOrigin(0, 0).setDepth(3);
+        addTile(this, h.x0, h.y1 - 24, h.x1 - h.x0, 24, 't_thorns').setOrigin(0, 0).setDepth(3);
       }
     }
     for (const d of L.decor) {
-      const key = `t_${d.kind}`;
+      const key = d.kind === 'torch' || d.kind === 'fern' ? d.kind : `t_${d.kind}`;
       const img = addImage(this, d.x, d.y, key).setDepth(-5);
       if (d.kind === 'vine') img.setOrigin(0.5, 0);
       else if (d.kind === 'torch') {
@@ -218,7 +223,7 @@ export class CoopScene extends Phaser.Scene {
       this.gates.push({ tile, icon });
     }
     for (const b of L.bridges) {
-      this.bridges.push(addTile(this, b.x0, b.y0 - 2, 1, 22, 't_bridge').setOrigin(0, 0).setDepth(3));
+      this.bridges.push(addTile(this, b.x0, b.y0 - 2, 1, 24, 't_bridge').setOrigin(0, 0).setDepth(3));
     }
     for (const lv of L.levers) {
       this.levers.push(addImage(this, lv.x, lv.y + 2, 't_lever_off').setOrigin(0.5, 1).setDepth(4));
@@ -364,7 +369,7 @@ export class CoopScene extends Phaser.Scene {
         rig.setPose(this.poseFor(st));
         if (Math.abs(st.vx) > 5) rig.setFacing(st.vx > 0 ? 1 : -1);
         else rig.setFacing(st.facing);
-        this.tags[slot].setPosition(rig.x, rig.y - 86);
+        this.tags[slot].setPosition(rig.x, rig.y - 98);
       }
       this.lastRespawn[slot] = st.respawn;
       rig.update(dt);
@@ -427,7 +432,7 @@ export class CoopScene extends Phaser.Scene {
       const tile = this.bridges[i];
       if (!tile) return;
       const w = Math.max(1, (m.bridges[i] ?? 0) * (b.x1 - b.x0));
-      tile.setSize(w, 22);
+      tile.setSize(w, 24);
       tile.setVisible((m.bridges[i] ?? 0) > 0.02);
       const hold = m.bridgeHold[i] ?? 0;
       tile.setAlpha(hold > 0 && hold < COOP.BRIDGE_HOLD_TICKS && (m.bridges[i] ?? 0) > 0.98 ? (Math.sin(t * 20) > 0 ? 1 : 0.5) : 1);
@@ -481,7 +486,7 @@ export class CoopScene extends Phaser.Scene {
 
     // Flecha al compañero fuera de cámara
     const partner = this.rigs[this.me === 0 ? 1 : 0];
-    const wv = cam.worldView;
+    const wv = viewRect(cam);
     const inside = partner.visible && partner.x > wv.x + 10 && partner.x < wv.right - 10 && partner.y > wv.y && partner.y - 70 < wv.bottom;
     this.arrow.setVisible(!inside && partner.visible);
     this.arrowTag.setVisible(!inside && partner.visible);
