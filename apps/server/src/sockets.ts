@@ -223,6 +223,12 @@ export function attachSocketServer(httpServer: HttpServer, config: ServerConfig)
         joinLimiter.hit(socket.data.ip, now);
         return safeAck(ack, { ok: false, error: r.error });
       }
+      const prev = socket.data.seat;
+      if (prev && (prev.code !== r.room.code || prev.slot !== r.slot)) {
+        // El socket tenía otro asiento: queda desconectado (no "fantasma").
+        socket.leave(channel(prev.code));
+        manager.disconnect(prev, socket.id, now);
+      }
       socket.data.seat = { code: r.room.code, slot: r.slot };
       void socket.join(channel(r.room.code));
       safeAck(ack, { ok: true, token: p.token, slot: r.slot, state: r.room.state(now), expiresAt: r.expiresAt });

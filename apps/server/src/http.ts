@@ -30,7 +30,8 @@ export function securityHeaders(req: IncomingMessage, config: ServerConfig): Rec
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      "connect-src 'self' wss: ws:",
+      // En producción solo WSS; en desarrollo también ws: (sin TLS local).
+      config.production ? "connect-src 'self' wss:" : "connect-src 'self' wss: ws:",
       "media-src 'self' data: blob:",
       "worker-src 'self' blob:",
       "object-src 'none'",
