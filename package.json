@@ -1,0 +1,39 @@
+{
+  "name": "duo-caos-para-dos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DUO — Caos para Dos: videojuego multijugador online para dos personas desde sus celulares.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build -w @duo/web && npm run build -w @duo/server",
+    "build:e2e": "npm run build:e2e -w @duo/web && npm run build -w @duo/server",
+    "start": "node apps/server/dist/index.js",
+    "typecheck": "tsc -p packages/shared && tsc -p apps/server && tsc -p apps/web",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test --trace off",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "globals": "16.5.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "4.1.12",
+    "vite": "7.3.8"
+  }
+}

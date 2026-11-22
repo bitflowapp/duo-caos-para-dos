@@ -1,0 +1,28 @@
+{
+  "name": "@duo/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Cliente web de DUO (Vite + Phaser 3 + React).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:e2e": "vite build --mode e2e",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@duo/shared": "0.1.0",
+    "@fontsource/fredoka": "5.2.10",
+    "@fontsource/nunito": "5.2.7",
+    "phaser": "3.90.0",
+    "react": "19.2.9",
+    "react-dom": "19.2.9",
+    "socket.io-client": "4.8.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "5.1.4",
+    "vite": "7.3.8"
+  }
+}
