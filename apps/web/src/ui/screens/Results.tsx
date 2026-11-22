@@ -1,4 +1,6 @@
-import { MODES, type MatchResult, type RoomState } from '@duo/shared';
+import { ACCESSORIES, MODES, type MatchResult, type RoomState } from '@duo/shared';
+import { accessoryIconSvg } from '../../game/art/accessories';
+import { ACHIEVEMENTS } from '../../persistence/profile';
 import { audio } from '../../audio';
 import { net } from '../../net/NetClient';
 import { useStore } from '../../state/store';
@@ -87,9 +89,11 @@ function Details({ result, names }: { result: MatchResult; names: [string, strin
 
 export function Results({ room }: { room: RoomState }) {
   const session = useStore((s) => s.session);
+  const rewards = useStore((s) => s.rewards);
   const me = (session?.slot ?? 0) as 0 | 1;
   const other = me === 0 ? 1 : 0;
   const res = room.lastResult;
+  const earned = rewards && res && rewards.matchId === res.id ? ACHIEVEMENTS.filter((a) => rewards.ids.includes(a.id)) : [];
   const tour = room.tour;
   const inTour = tour !== null && !tour.finished;
   const names: [string, string] = [room.players[0]?.name ?? 'Jugador 1', room.players[1]?.name ?? 'Jugador 2'];
@@ -157,6 +161,35 @@ export function Results({ room }: { room: RoomState }) {
             )}
           </section>
         ) : null}
+
+        <section className="card stack" aria-labelledby="rewards-title">
+          <h3 id="rewards-title" style={{ margin: 0 }}>
+            Recompensas
+          </h3>
+          <div className="row between small">
+            <span>Tus puntos en esta partida</span>
+            <b style={{ color: 'var(--gold)' }}>+{res.points[me]}</b>
+          </div>
+          {earned.length > 0 ? (
+            earned.map((a) => (
+              <div key={a.id} className="row" style={{ gap: 12 }} data-testid="reward">
+                {a.unlocks ? (
+                  <span className="acc" aria-hidden="true" style={{ width: 52, height: 52 }} dangerouslySetInnerHTML={{ __html: accessoryIconSvg(a.unlocks) }} />
+                ) : null}
+                <span>
+                  <b>Logro: {a.name}</b>
+                  <br />
+                  <span className="muted small">
+                    {a.description}
+                    {a.unlocks ? ` · Desbloqueaste: ${ACCESSORIES[a.unlocks].name}` : ''}
+                  </span>
+                </span>
+              </div>
+            ))
+          ) : (
+            <span className="muted small">Sigan jugando para desbloquear logros y accesorios nuevos.</span>
+          )}
+        </section>
 
         <section className="card tight stack" aria-label="Sesión">
           <div className="row between small">

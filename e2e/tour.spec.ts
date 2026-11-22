@@ -37,6 +37,8 @@ test('gira completa entre dos celulares con revancha', async ({ browser }, info)
   const raceA = await waitForResults(a);
   const raceB = await waitForResults(b);
   expect(raceA).toBe(raceB);
+  // Recompensas: la primera partida desbloquea "Primera chispa" (y un accesorio)
+  await expect(a.page.getByTestId('reward').first()).toContainText('Primera chispa');
   await a.page.screenshot({ path: info.outputPath('resultado-carrera.png') });
 
   // 2) Sincronizados

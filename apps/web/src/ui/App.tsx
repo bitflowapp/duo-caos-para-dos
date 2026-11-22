@@ -24,6 +24,7 @@ function useResultEffects(): void {
     const me = session.slot;
     const partner = room.players[me === 0 ? 1 : 0];
     const fresh = recordResult(res, me, partner?.name ?? '', { roomCode: room.code, tourFinished: room.tour?.finished === true });
+    store.set({ rewards: { matchId: res.id, ids: fresh.map((a) => a.id) } });
     if (res.cooperative) {
       audio.jingle(res.details.kind === 'coop' && res.details.success ? 'victory' : 'defeat');
     } else if (res.winner === null) audio.jingle('tie');

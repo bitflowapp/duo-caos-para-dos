@@ -47,8 +47,9 @@ export interface AppState {
   notice: string | null;
   replaced: boolean;
   settings: Settings;
-  /** Reloj local (ms) en que se pidió el último cambio de pantalla de juego. */
   lastEmote: { slot: Slot; id: string; at: number } | null;
+  /** Logros desbloqueados en la última partida (por id de partida). */
+  rewards: { matchId: number; ids: string[] } | null;
 }
 
 type Listener = () => void;
@@ -92,6 +93,7 @@ export const store = new Store({
   replaced: false,
   settings: loadSettings(),
   lastEmote: null,
+  rewards: null,
 });
 
 /** Hook de React: el selector debe devolver valores estables (partes del estado). */
