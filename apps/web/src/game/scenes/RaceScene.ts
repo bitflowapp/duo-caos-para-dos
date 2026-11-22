@@ -547,6 +547,7 @@ export class RaceScene extends Phaser.Scene {
           const meRig = this.rigs[this.me];
           const close = Math.abs(meRig.x - rig.x) < 56 && Math.abs(meRig.y - rig.y) < 70;
           rig.ghost = close ? 0.55 : 1;
+          this.tags[slot].setVisible(!close);
         }
         rig.shadowY = 0;
         rig.setFacing(st.vx < -20 ? -1 : 1);

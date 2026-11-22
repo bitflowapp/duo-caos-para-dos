@@ -245,6 +245,13 @@ export function GameOverlay({ room }: { room: RoomState }) {
             label={`${MODES[mode].name}${myChar ? ` · sos ${CHARACTERS[myChar].name}` : ''}`}
           />
         ) : null}
+        {room.phase === 'countdown' && mode !== 'quiz' ? (
+          <div className="tip" role="note">
+            {mode === 'race'
+              ? 'SALTAR: tocá (mantené para más alto; otra vez en el aire = doble salto). DESLIZAR: pasá por debajo. Las Cajas del Caos dan ítems.'
+              : '◀ ▶ para moverte, SALTAR y ACCIÓN en palancas y consolas. ¡Cada uno abre el camino del otro!'}
+          </div>
+        ) : null}
         {room.phase === 'playing' && wentLive && mode !== 'quiz' ? <GoFlash key={room.matchId} /> : null}
       </div>
       {room.phase !== 'countdown' && mode === 'race' ? <RaceControls /> : null}
