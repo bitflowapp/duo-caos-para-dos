@@ -1,5 +1,8 @@
 # DUO — Caos para Dos
 
+**Jugar ahora: <https://duo-caos-para-dos.onrender.com>** (servidor gratuito: si llevaba un rato
+sin uso, la primera carga puede tardar hasta un minuto).
+
 Videojuego web multijugador para **dos personas, cada una desde su celular**: aventura
 cooperativa, competencia amistosa, humor y romance opcional. Sin registro, sin
 anuncios, sin instalar nada.

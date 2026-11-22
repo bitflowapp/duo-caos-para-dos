@@ -121,6 +121,23 @@ LCP 4,3 s). Mitigaciones aplicadas: la interfaz React aparece primero, Phaser se
 en el primer momento ocioso y el rasterizado cede el hilo principal entre tandas. En
 juego, la resolución baja sola si los FPS caen por debajo de 45.
 
+### Verificación del despliegue (Render, 22/11/2026)
+
+Contra <https://duo-caos-para-dos.onrender.com> (plan Free, región Virginia):
+
+| Verificación | Resultado |
+| ------------ | --------- |
+| Build en Render (`npm ci --include=dev && npm run build`) | ✅ `live` en < 1 min |
+| `GET /healthz` | ✅ 200 `{"ok":true,…}` |
+| HTTPS | ✅ certificado válido, HTTP/2, `Strict-Transport-Security`, CSP de producción (`connect-src 'self' wss:`) |
+| WebSocket | ✅ transporte `websocket` puro sobre `wss://…/socket.io/` (RTT ≈ 36 ms desde la sandbox) |
+| Sala por red | ✅ crear, unirse, cupo lleno rechaza al tercero, `game:start` idéntico en ambos clientes |
+| Navegador real (Chromium, Pixel 7) | ✅ interfaz lista en ~1,2 s, sala creada, canvas de Phaser activo, **0 errores de consola/CSP** |
+| **Gira completa + revancha** (`npm run smoke`) | ✅ carrera, templo (3 ★), quiz (con puntos) y revancha sin crear sala |
+
+`npm run smoke -- <URL>` queda en el repo para verificar cualquier despliegue futuro.
+Sigue pendiente la prueba con **dos teléfonos físicos** (checklist más abajo).
+
 ### Verificación visual
 
 Se revisaron capturas de Chromium (perfil Pixel 7, vertical y horizontal) de inicio,

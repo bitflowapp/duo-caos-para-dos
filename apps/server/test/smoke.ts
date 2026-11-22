@@ -5,8 +5,8 @@
  *
  *   npm run smoke -- https://mi-app.onrender.com
  *
- * Si hay HTTPS_PROXY (entornos con proxy de salida) y está instalado
- * `https-proxy-agent`, se usa para llegar a la URL; si no, se conecta directo.
+ * Si hay HTTPS_PROXY (entornos con proxy de salida) se usa para llegar a la URL;
+ * si no, se conecta directo.
  */
 import { io, type Socket } from 'socket.io-client';
 import type { ClientToServerEvents, GameStartPayload, JoinAck, RoomState, ServerToClientEvents } from '@duo/shared';
@@ -23,9 +23,8 @@ async function proxyAgent(): Promise<object | undefined> {
   const proxy = process.env.HTTPS_PROXY ?? process.env.https_proxy;
   if (!proxy) return undefined;
   try {
-    const name = 'https-proxy-agent'; // especificador dinámico: dependencia opcional
-    const mod = (await import(name)) as { HttpsProxyAgent: new (u: string) => object };
-    return new mod.HttpsProxyAgent(proxy);
+    const { HttpsProxyAgent } = await import('https-proxy-agent');
+    return new HttpsProxyAgent(proxy);
   } catch {
     return undefined;
   }
@@ -40,7 +39,24 @@ const log = (...a: unknown[]): void => console.log(new Date().toISOString().slic
 
 const a = mk();
 const b = mk();
-await Promise.all([new Promise<void>((r) => a.once('connect', () => r())), new Promise<void>((r) => b.once('connect', () => r()))]);
+const connected = (s: TestSocket): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('sin respuesta en 40 s (¿el servicio está dormido o la URL es incorrecta?)')), 40_000);
+    s.once('connect', () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    s.once('connect_error', (e) => {
+      clearTimeout(timer);
+      reject(e);
+    });
+  });
+try {
+  await Promise.all([connected(a), connected(b)]);
+} catch (e) {
+  log('FALLO al conectar por WSS:', e instanceof Error ? e.message : e);
+  process.exit(1);
+}
 
 // Sincroniza el reloj local con el del servidor (los bots usan Date.now()).
 const samples: number[] = [];

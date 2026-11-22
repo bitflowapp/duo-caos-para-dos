@@ -19,7 +19,7 @@
 | Sin errores críticos conocidos | ✅ | Ninguno abierto al cierre de esta entrega |
 | Build de producción | ✅ | `npm run build` |
 | Pruebas automatizadas relevantes | ✅ | 145 Vitest + 8 E2E |
-| Versión desplegada verificada | ❌ **No desplegada** | El entorno no tiene acceso de red a proveedores de hosting ni credenciales. Listo para Render en ~5 min (ver `docs/DEPLOYMENT.md`) |
+| Versión desplegada verificada | ✅ <https://duo-caos-para-dos.onrender.com> (Render, plan Free) | `/healthz`, HTTPS/HTTP2 + HSTS + CSP, WSS puro, navegador real y **Gira completa + revancha por WSS** (`npm run smoke`). Ver `docs/TESTING.md`. Falta la partida con dos teléfonos reales |
 
 ## Condiciones de reconexión
 
@@ -42,7 +42,7 @@
 2. **Salas en memoria, una sola instancia.** No escala horizontalmente ni sobrevive
    reinicios. Para más usuarios: adaptador Redis de Socket.IO + persistencia.
 3. **Plan gratuito**: el servidor se duerme tras ~15 min sin tráfico; el primer acceso
-   tarda ~30–60 s.
+   tarda ~30–60 s. Los pushes a GitHub no redespliegan solos (ver `docs/DEPLOYMENT.md`).
 4. **Progreso local**: logros, accesorios e historial viven en el `localStorage` del
    dispositivo. Borrar datos del navegador los reinicia. El servidor no puede verificar
    desbloqueos (son solo cosméticos; valida que el accesorio exista).

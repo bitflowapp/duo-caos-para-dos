@@ -81,12 +81,17 @@ con `VITE_SERVER_URL=https://servidor` y agregar ese origen en `ALLOWED_ORIGINS`
 
 - **URL pública:** <https://duo-caos-para-dos.onrender.com>
 - **Hosting:** Render, servicio web **plan Free** (USD 0), región Virginia (EE. UU. este),
-  Node 22, `autoDeploy` activado sobre la rama de desarrollo.
+  Node 22, desplegando la rama `claude/duo-caos-para-dos-57o9no`.
 - Se creó por la API de Render con los mismos parámetros de `render.yaml`
   (build `npm ci --include=dev && npm run build`, start `node apps/server/dist/index.js`,
   health check `/healthz`, variables `NODE_VERSION=22`, `NODE_ENV=production`, `TRUST_PROXY=1`).
-- **Cada push a esa rama redespliega** y, al reiniciar, cierra las salas abiertas.
-  Para producción estable conviene apuntar el servicio a `main` una vez mergeado el PR
+- **Los pushes NO redespliegan solos.** El servicio se creó por API conectando el repo
+  público por URL, sin la app de GitHub de Render, y en ese modo Render no recibe los
+  webhooks (verificado: 5 min sin deploy tras un push). Para publicar una versión nueva:
+  Render → servicio → **Manual Deploy → Deploy latest commit**, o instalar la app de
+  GitHub de Render sobre el repo para activar el auto-deploy.
+- Cada deploy reinicia el servidor y **cierra las salas abiertas**.
+- Para producción estable, apuntar el servicio a `main` una vez mergeado el PR
   (Render → Settings → Branch).
 
 ### Verificar un despliegue
