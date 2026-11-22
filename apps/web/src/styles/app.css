@@ -1369,3 +1369,18 @@ input:focus-visible {
   color: var(--rose);
   vertical-align: -2px;
 }
+
+/* Pantallas angostas (vertical): el HUD va debajo de los indicadores de conexión */
+@media (max-width: 560px) {
+  .hud-top {
+    top: calc(var(--safe-top) + 58px);
+    left: calc(var(--safe-left) + 12px);
+    right: calc(var(--safe-right) + 12px);
+  }
+  .tip {
+    top: calc(var(--safe-top) + 150px);
+  }
+  .toasts {
+    top: calc(var(--safe-top) + 150px);
+  }
+}
