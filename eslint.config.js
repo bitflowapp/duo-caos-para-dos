@@ -30,7 +30,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/server/src/log.ts', 'scripts/**/*.mjs'],
+    files: ['apps/server/src/log.ts', 'apps/server/test/smoke.ts', 'scripts/**/*.mjs'],
     rules: { 'no-console': 'off' },
   },
 );

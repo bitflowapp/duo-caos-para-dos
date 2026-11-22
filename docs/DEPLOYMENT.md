@@ -77,8 +77,25 @@ Delante, un proxy con TLS (Caddy/Nginx) que reenvíe WebSocket (`Upgrade`/`Conne
 Si el cliente se publicara en otro dominio (p. ej. estático en otro hosting), compilarlo
 con `VITE_SERVER_URL=https://servidor` y agregar ese origen en `ALLOWED_ORIGINS`.
 
-## Estado del despliegue en esta entrega
+## Despliegue actual
 
-Ver `docs/TESTING.md` y el resumen del PR: el entorno de desarrollo automatizado no
-tiene acceso de red a proveedores de hosting ni credenciales, así que el despliegue
-requiere que el dueño del repositorio conecte su cuenta (pasos de arriba, ~5 minutos).
+- **URL pública:** <https://duo-caos-para-dos.onrender.com>
+- **Hosting:** Render, servicio web **plan Free** (USD 0), región Virginia (EE. UU. este),
+  Node 22, `autoDeploy` activado sobre la rama de desarrollo.
+- Se creó por la API de Render con los mismos parámetros de `render.yaml`
+  (build `npm ci --include=dev && npm run build`, start `node apps/server/dist/index.js`,
+  health check `/healthz`, variables `NODE_VERSION=22`, `NODE_ENV=production`, `TRUST_PROXY=1`).
+- **Cada push a esa rama redespliega** y, al reiniciar, cierra las salas abiertas.
+  Para producción estable conviene apuntar el servicio a `main` una vez mergeado el PR
+  (Render → Settings → Branch).
+
+### Verificar un despliegue
+
+```bash
+curl https://TU-APP/healthz            # {"ok":true,...}
+npm run smoke -- https://TU-APP        # juega la Gira completa + revancha por WSS
+```
+
+`npm run smoke` crea una sala, une a un segundo cliente, juega **carrera, templo y quiz**
+con dos clientes automáticos (mismo código de predicción que el navegador) y pide la
+revancha. Sale con código 0 solo si todo funcionó. Sirve para cada deploy futuro.
