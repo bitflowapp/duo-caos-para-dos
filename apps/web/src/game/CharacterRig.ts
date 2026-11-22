@@ -50,7 +50,7 @@ const BASE_EXPR: Record<Pose, Expression> = {
  */
 export class CharacterRig extends Phaser.GameObjects.Container {
   readonly character: CharacterId;
-  private readonly body: Phaser.GameObjects.Container;
+  private readonly torso: Phaser.GameObjects.Container;
   private readonly bodyImg: Phaser.GameObjects.Image;
   private readonly top: Phaser.GameObjects.Image;
   private readonly eyes: Phaser.GameObjects.Image;
@@ -92,7 +92,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.shadow.setScale(this.shadow.scaleX * 0.9);
     this.footL = makeImage(scene, px(rig.footL.x), py(rig.footL.y), ck.foot(character, skin));
     this.footR = makeImage(scene, px(rig.footR.x), py(rig.footR.y), ck.foot(character, skin));
-    this.body = new Phaser.GameObjects.Container(scene, 0, 0);
+    this.torso = new Phaser.GameObjects.Container(scene, 0, 0);
     this.armBack = makeImage(scene, px(rig.armR.x), py(rig.armR.y), ck.arm(character, skin));
     this.armBack.setOrigin(0.5, 0.15).setTint(0xd8d0e8);
     this.bodyImg = makeImage(scene, px(64), py(64), ck.body(character, skin));
@@ -104,8 +104,8 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.blush.setVisible(false);
     this.armFront = makeImage(scene, px(rig.armL.x), py(rig.armL.y), ck.arm(character, skin));
     this.armFront.setOrigin(0.5, 0.15);
-    this.body.add([this.armBack, this.top, this.bodyImg, this.eyes, this.mouth, this.blush, this.armFront]);
-    this.add([this.shadow, this.footL, this.footR, this.body]);
+    this.torso.add([this.armBack, this.top, this.bodyImg, this.eyes, this.mouth, this.blush, this.armFront]);
+    this.add([this.shadow, this.footL, this.footR, this.torso]);
     this.setAccessory(accessory);
     this.setScale(this.baseScale);
     scene.add.existing(this);
@@ -119,7 +119,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     const img = makeImage(this.scene, a.x - 64, a.y - 118, ck.acc(id));
     img.setScale(img.scaleX * a.scale).setAngle(a.rot);
     this.accessory = img;
-    this.body.add(img);
+    this.torso.add(img);
   }
 
   setFacing(dir: 1 | -1): void {
@@ -149,7 +149,7 @@ export class CharacterRig extends Phaser.GameObjects.Container {
     this.squash = -1;
   }
 
-  update(dt: number): void {
+  override update(dt: number): void {
     this.t += dt;
     this.poseTime += dt;
     const t = this.t;
@@ -290,9 +290,9 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       bodyY -= Math.sin(k * Math.PI) * 18;
     }
 
-    this.body.setPosition(0, bodyY);
-    this.body.setScale(sx, sy);
-    this.body.setRotation(rot);
+    this.torso.setPosition(0, bodyY);
+    this.torso.setScale(sx, sy);
+    this.torso.setRotation(rot);
     this.armFront.setAngle(armF);
     this.armBack.setAngle(armB);
     this.footL.setPosition(px(rig.footL.x) + fLx, py(rig.footL.y) + fLy);

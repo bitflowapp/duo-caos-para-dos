@@ -1,7 +1,6 @@
 import type { Server as HttpServer } from 'node:http';
 import { Server, type Socket } from 'socket.io';
 import {
-  JOIN_ATTEMPTS_PER_MINUTE,
   MAX_RATE_VIOLATIONS,
   PROTOCOL_VERSION,
   RATE_LIMITS,
@@ -105,7 +104,7 @@ export function attachSocketServer(httpServer: HttpServer, config: ServerConfig)
     config.maxRooms,
   );
 
-  const joinLimiter = new WindowLimiter(JOIN_ATTEMPTS_PER_MINUTE, 60_000);
+  const joinLimiter = new WindowLimiter(config.joinAttemptsPerMinute, 60_000);
   const connectionsPerIp = new Map<string, number>();
 
   const clientIp = (socket: DuoSocket): string => {

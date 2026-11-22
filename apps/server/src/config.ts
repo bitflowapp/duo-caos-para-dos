@@ -1,10 +1,11 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { JOIN_ATTEMPTS_PER_MINUTE } from '@duo/shared';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
-function intEnv(name: string, fallback: number): number {
-  const raw = process.env[name];
+function intEnvFrom(env: NodeJS.ProcessEnv, name: string, fallback: number): number {
+  const raw = env[name];
   if (!raw) return fallback;
   const n = Number.parseInt(raw, 10);
   return Number.isFinite(n) ? n : fallback;
@@ -22,9 +23,12 @@ export interface ServerConfig {
   trustProxy: boolean;
   maxRooms: number;
   maxConnectionsPerIp: number;
+  /** Intentos de crear/unirse/reanudar por IP por minuto. */
+  joinAttemptsPerMinute: number;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
+  const intEnv = (name: string, fallback: number): number => intEnvFrom(env, name, fallback);
   const production = env.NODE_ENV === 'production';
   const defaultStatic = path.resolve(here, '../../web/dist');
   const staticDir = env.STATIC_DIR === '' ? null : path.resolve(env.STATIC_DIR ?? defaultStatic);
@@ -44,5 +48,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     trustProxy: env.TRUST_PROXY === '1' || env.TRUST_PROXY === 'true',
     maxRooms: intEnv('MAX_ROOMS', 500),
     maxConnectionsPerIp: intEnv('MAX_CONNECTIONS_PER_IP', 16),
+    joinAttemptsPerMinute: intEnv('JOIN_ATTEMPTS_PER_MINUTE', JOIN_ATTEMPTS_PER_MINUTE),
   };
 }
