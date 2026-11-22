@@ -536,11 +536,18 @@ export class RaceScene extends Phaser.Scene {
         this.tags[slot].setVisible(false);
       } else {
         rig.setVisible(true);
-        this.tags[slot].setVisible(true);
+        // Solo se muestra el nombre del rival; a uno mismo lo marca el triángulo.
+        this.tags[slot].setVisible(!isMe);
         rig.setPosition(st.x + ox, st.y + oy);
         rig.speed = st.vx;
         rig.setPose(this.poseFor(st));
         rig.flicker = st.invuln > 0 && st.stun === 0;
+        if (!isMe) {
+          // Rival "fantasma" cuando se superpone con el propio personaje.
+          const meRig = this.rigs[this.me];
+          const close = Math.abs(meRig.x - rig.x) < 56 && Math.abs(meRig.y - rig.y) < 70;
+          rig.ghost = close ? 0.55 : 1;
+        }
         rig.shadowY = 0;
         rig.setFacing(st.vx < -20 ? -1 : 1);
         this.tags[slot].setPosition(rig.x, rig.y - 112);

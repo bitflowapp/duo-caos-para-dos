@@ -37,7 +37,7 @@ resultados y durante el juego (los personajes reaccionan en pantalla).
   volcán). Una semilla elige y ordena los bloques → cada revancha es distinta.
   Obstáculos: erizos, cangrejos, ramas bajas, gaviotas, pinches, pozos, muros;
   ayudas: resortes, flechas turbo, plataformas, una "ruta alta" opcional.
-- **Corazones** coleccionables (cada jugador los suyos): +10 puntos c/u.
+- **Corazones** coleccionables (cada jugador los suyos): +5 puntos c/u.
 - **Cajas del Caos**: ítem con ruleta. Quien va atrás recibe ítems más fuertes
   (*rubber banding*): Turbo, Cáscara de mango (trampa para el rival), Nube gruñona
   (lo frena), Beso volador (lo "derrite" un segundo), Corazón escudo.
@@ -45,7 +45,7 @@ resultados y durante el juego (los personajes reaccionan en pantalla).
   viento en contra.
 - **Caídas**: reaparecés en el último punto de control. Golpes: mareo breve.
 - **Puntos**: ganador 500 · empate 400 · llegó segundo 250 · no llegó 150;
-  +10 por corazón; +100 "Impecable" (sin golpes ni caídas).
+  +5 por corazón; +100 "Impecable" (sin golpes ni caídas).
 - Fin: cuando llegan los dos, o 12 s después del primero, o a los 2:40.
 
 ## B. Sincronizados (cooperativo, ~2–4 min)

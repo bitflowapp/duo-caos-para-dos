@@ -83,7 +83,7 @@ export function App() {
     <>
       {screen}
       {room && view !== 'settings' && view !== 'profile' ? (
-        <div className="topbar">
+        <div className={`topbar${inGame ? '' : ' menu'}`}>
           <ConnectionBadge room={room} />
           <TopActions compact={!!inGame} />
         </div>

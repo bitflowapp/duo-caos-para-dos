@@ -56,6 +56,7 @@ export class CoopScene extends Phaser.Scene {
   private torches: Phaser.GameObjects.Image[] = [];
   private signs: Array<{ x: number; y: number; text: Phaser.GameObjects.Text }> = [];
   private arrow!: Phaser.GameObjects.Triangle;
+  private marker!: Phaser.GameObjects.Triangle;
   private arrowTag!: Phaser.GameObjects.Text;
   private unsubs: Array<() => void> = [];
   private lastHud = 0;
@@ -257,6 +258,7 @@ export class CoopScene extends Phaser.Scene {
       makeNameTag(this, this.start.names[1], CHARACTER_COLOR[this.start.characters[1]]),
     ];
     const partner: Slot = this.me === 0 ? 1 : 0;
+    this.marker = this.add.triangle(0, 0, 0, 0, 16, 0, 8, 12, 0xffd25e).setDepth(41).setStrokeStyle(2, 0x2b1650);
     const color = Phaser.Display.Color.HexStringToColor(CHARACTER_COLOR[this.start.characters[partner]]).color;
     this.arrow = this.add.triangle(0, 0, 0, 0, 26, 13, 0, 26, color).setDepth(60).setStrokeStyle(3, 0xffffff).setVisible(false);
     this.arrowTag = makeNameTag(this, this.start.names[partner], CHARACTER_COLOR[this.start.characters[partner]]).setDepth(60).setVisible(false);
@@ -363,7 +365,7 @@ export class CoopScene extends Phaser.Scene {
         this.tags[slot].setVisible(false);
       } else {
         rig.setVisible(true);
-        this.tags[slot].setVisible(true);
+        this.tags[slot].setVisible(!isMe);
         rig.setPosition(st.x + (isMe ? this.pred.offset.x : 0), st.y + (isMe ? this.pred.offset.y : 0));
         rig.speed = Math.abs(st.vx);
         rig.setPose(this.poseFor(st));
@@ -374,6 +376,8 @@ export class CoopScene extends Phaser.Scene {
       this.lastRespawn[slot] = st.respawn;
       rig.update(dt);
     }
+    const meRig = this.rigs[this.me];
+    this.marker.setPosition(meRig.x - 8, meRig.y - 100).setVisible(meRig.visible);
     this.updateMechVisuals(this.pred.mech);
     this.updateCamera(dt);
     this.updateHud(mine, partner, tick);

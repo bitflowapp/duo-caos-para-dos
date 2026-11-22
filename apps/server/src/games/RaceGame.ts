@@ -286,7 +286,7 @@ export class RaceGame implements GameInstance {
     const points: Pair<number> = [0, 0];
     for (const slot of [0, 1] as const) {
       const r = this.runners[slot];
-      let p = r.hearts * 10;
+      let p = r.hearts * 5;
       if (winner === slot) p += 500;
       else if (winner === null) p += 400;
       else p += r.finish >= 0 ? 250 : 150;

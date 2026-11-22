@@ -77,6 +77,8 @@ export class CharacterRig extends Phaser.GameObjects.Container {
   speed = 0;
   /** Parpadeo de invulnerabilidad. */
   flicker = false;
+  /** Opacidad base (p. ej. rival "fantasma" cuando se superpone). */
+  ghost = 1;
   /** Mostrar la sombra (desactivar en el aire lejos del piso). */
   shadowY = 0;
 
@@ -346,6 +348,6 @@ export class CharacterRig extends Phaser.GameObjects.Container {
       for (const s of this.stars) s.setVisible(false);
     }
 
-    this.setAlpha(this.flicker ? (Math.sin(t * 40) > 0 ? 0.35 : 0.9) : 1);
+    this.setAlpha((this.flicker ? (Math.sin(t * 40) > 0 ? 0.35 : 0.9) : 1) * this.ghost);
   }
 }
