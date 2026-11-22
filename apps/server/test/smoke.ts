@@ -84,7 +84,7 @@ for (const [sock, slot] of [[a, 0], [b, 1]] as const) {
       botB = bot;
     }
   });
-  sock.on('quiz:question', (q) => setTimeout(() => sock.emit('quiz:answer', { q: q.index, choice: (q.index + slot) % 2 }), 400 + slot * 250));
+  sock.on('quiz:question', (q) => setTimeout(() => sock.emit('quiz:answer', { q: q.index, choice: q.index % 2 === 0 ? 0 : slot }), 400 + slot * 250));
 }
 
 a.emit('lobby:select', { character: 'chispa', skin: 0, accessory: 'none' });
@@ -101,6 +101,10 @@ while (Date.now() < deadline) {
   if (state.phase === 'results' && state.lastResult && state.lastResult.id !== lastShown) {
     lastShown = state.lastResult.id;
     results.push(`${state.lastResult.mode}: ${state.lastResult.headline} (${state.lastResult.points.join(' / ')})`);
+    if (state.lastResult.mode === 'quiz' && state.lastResult.points[0] + state.lastResult.points[1] === 0) {
+      log('FALLO: el quiz no otorgó puntos aunque hubo coincidencias de respuestas');
+      process.exit(1);
+    }
     log('resultado ->', results.at(-1));
     if (state.tour?.finished) break;
     a.emit('post:vote', { kind: 'next' });
