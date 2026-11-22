@@ -11,3 +11,4 @@ test-results/
 *.log
 .vscode/
 .idea/
+!apps/web/.env.e2e
