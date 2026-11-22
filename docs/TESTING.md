@@ -21,7 +21,9 @@ npm run e2e         # Playwright (Chromium): perfiles android-chromium e iphone-
 ```
 
 `npm run check` encadena typecheck + lint + test + build. CI (GitHub Actions) corre
-lo mismo y luego los E2E en cada push y PR (`.github/workflows/ci.yml`).
+lo mismo y luego los E2E en cada PR y en cada push a `main` (`.github/workflows/ci.yml`).
+En GitHub, el job "Tipos, lint, tests y build" pasó en el primer push de esta rama
+(incluidas las 3 partidas completas por red).
 
 ## Resultados de esta entrega (22/11/2026)
 
